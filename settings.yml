@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+
+search:
+  safe_search: 1
+  autocomplete: "duckduckgo"
+  default_lang: "en"
+
+engines:
+  - name: google
+    engine: google
+    api_key: ""
+    cx: ""
+    disabled: true
+
+  - name: brave
+    engine: brave
+    disabled: false
+
+  - name: bing
+    engine: bing
+    disabled: true
+
+ui:
+  static_path: "searx/static"
+  templates_path: "searx/templates"
+
+redis:
+  url: ""
+
+general:
+  instance_name: "My Render SearXNG"
