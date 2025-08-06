@@ -1,20 +1,24 @@
-FROM alpine:latest
+FROM python:3.11-slim
 
-# Install dependencies
-RUN apk add --no-cache python3 py3-pip git build-base libffi-dev openssl-dev
-
-# Clone SearXNG
-RUN git clone https://github.com/searxng/searxng.git /searxng
-
+# Set working directory
 WORKDIR /searxng
 
-# Install Python dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Install git and clone SearXNG
+RUN apt-get update && apt-get install -y git && \
+    git clone https://github.com/searxng/searxng.git . 
 
-# Add a default settings.yml (you’ll customize it below)
-COPY settings.yml /searxng/searx/settings.yml
+# Create virtual environment and install dependencies inside it
+RUN python3 -m venv /venv \
+    && . /venv/bin/activate \
+    && pip install --upgrade pip \
+    && pip install -r requirements.txt
 
-# Expose port
+# Copy custom settings.yml (optional if you're customizing)
+COPY settings.yml ./searx/settings.yml
+
+# Expose the port SearXNG uses
 EXPOSE 8080
 
-CMD ["python3", "-m", "searx.webapp"]
+# Run the app using the virtual environment's Python
+CMD ["/venv/bin/python3", "-m", "searx.webapp"]
+
